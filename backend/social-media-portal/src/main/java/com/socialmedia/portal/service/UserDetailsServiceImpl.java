@@ -48,6 +48,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		user.getAuth2AuthorizedClients().add(authorizedClient);
 		userRepo.saveAndFlush(user);
 	}
-
-
+	
 }

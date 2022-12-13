@@ -5,12 +5,12 @@ import java.time.ZoneOffset;
 import java.util.Set;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
 import org.springframework.stereotype.Service;
 
 import com.socialmedia.portal.security.entity.MyOAuth2AuthorizedClient;
@@ -24,17 +24,16 @@ import lombok.AllArgsConstructor;
 public class CustomOAuth2AuthorizedClientService implements OAuth2AuthorizedClientService {
 	private final OAuth2AuthorizedClientRepo authorizedClientRepository;
 	private final ClientRegistrationRepository clientRegistrationRepository;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends OAuth2AuthorizedClient> T loadAuthorizedClient(String clientRegistrationId,
 			String email) {
-		MyOAuth2AuthorizedClientId id = MyOAuth2AuthorizedClientId.builder()
-			.clientRegistrationId(clientRegistrationId)
-			.userId("2480114135486864")
-			.build();
+		Set<MyOAuth2AuthorizedClient> set = authorizedClientRepository.findByUserEmail(email).get();
 		MyOAuth2AuthorizedClient myOAuth2AuthorizedClient = 
-			authorizedClientRepository.findById(id).get();
+		set.stream()
+			.filter(e->e.getId().getClientRegistrationId().equals(clientRegistrationId))
+			.findFirst().get();
 		return (T) mapToOAuth2AuthorizedClient(myOAuth2AuthorizedClient);
 	}
 
@@ -49,7 +48,6 @@ public class CustomOAuth2AuthorizedClientService implements OAuth2AuthorizedClie
 		MyOAuth2AuthorizedClientId id = 
 			MyOAuth2AuthorizedClientId.builder()
 			.clientRegistrationId(clientRegistrationId)
-//			.principalName(principalName)
 			.build();
 		MyOAuth2AuthorizedClient entity = MyOAuth2AuthorizedClient.builder().id(id).build();
 		authorizedClientRepository.delete(entity);
@@ -79,7 +77,7 @@ public class CustomOAuth2AuthorizedClientService implements OAuth2AuthorizedClie
 	private OAuth2AccessToken mapToToken(MyOAuth2AuthorizedClient auth2AuthorizedClient) {
 		
 		OAuth2AccessToken oAuth2AccessToken=new OAuth2AccessToken(
-			OAuth2AccessToken.TokenType.BEARER,
+			TokenType.BEARER,
 			auth2AuthorizedClient.getAccessTokenValue(),
 			auth2AuthorizedClient.getAccessTokenIssuedAt().toInstant(ZoneOffset.UTC),
 			auth2AuthorizedClient.getAccessTokenExpiredAt().toInstant(ZoneOffset.UTC),
@@ -88,20 +86,17 @@ public class CustomOAuth2AuthorizedClientService implements OAuth2AuthorizedClie
 	}
 	
 	private MyOAuth2AuthorizedClient mapToMyOAuth2AuthorizedClient(OAuth2AuthorizedClient authorizedClient,Authentication authentication) {
-		Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-		Authentication authentication2 = SecurityContextHolder.getContext().getAuthentication();
 		MyOAuth2AuthorizedClientId id = MyOAuth2AuthorizedClientId.builder()
 			.clientRegistrationId(authorizedClient.getClientRegistration().getClientName().toLowerCase())
 			.userId(authorizedClient.getPrincipalName())
 			.build();
 		MyOAuth2AuthorizedClient build = MyOAuth2AuthorizedClient.builder()
 			.id(id)
-			.accessTokenType(authorizedClient.getAccessToken().getTokenType().toString())
+			.accessTokenType(authorizedClient.getAccessToken().getTokenType().getValue())
 			.accessTokenValue(authorizedClient.getAccessToken().getTokenValue())
 			.accessTokenIssuedAt(LocalDateTime.ofInstant(authorizedClient.getAccessToken().getIssuedAt(), ZoneOffset.UTC))
 			.accessTokenExpiredAt(LocalDateTime.ofInstant(authorizedClient.getAccessToken().getExpiresAt(), ZoneOffset.UTC))
 			.accessTokenScopes(authorizedClient.getAccessToken().getScopes().toString())
-//			.user(user)
 			.build();
 		return build;
 	}

@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NaturalId;
+
 import com.socialmedia.portal.framework.entity.AbstractEntity;
 import com.socialmedia.portal.security.entity.MyOAuth2AuthorizedClient;
 
@@ -36,6 +38,7 @@ import lombok.Setter;
 public class User extends AbstractEntity{
 
 	@Column(name="email",nullable = false)
+	@NaturalId
 	private String email;
 	
 	@Column(name="password",nullable = false)

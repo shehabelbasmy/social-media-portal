@@ -65,6 +65,9 @@ public class MyOAuth2AuthorizedClient {
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 	
+	@Column(name="updated_at")
+	private LocalDateTime updatedAt;
+	
 	@ManyToOne(fetch = FetchType.LAZY,cascade = {DETACH,MERGE,PERSIST,REFRESH})
 	@JoinColumn(name = "user_entity_id")
 	private User user;
