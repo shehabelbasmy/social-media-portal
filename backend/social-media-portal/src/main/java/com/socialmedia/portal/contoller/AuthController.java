@@ -2,6 +2,10 @@ package com.socialmedia.portal.contoller;
 
 import javax.validation.Valid;
 
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,5 +27,14 @@ public class AuthController {
 	@PostMapping("/login")
 	public TokenDto login(@RequestBody @Valid AuthenticationRequest authRequest) {
 		return authService.authenticate(authRequest);
+	}
+	
+	@GetMapping("/{registrationId}/{userId}")
+	public String test(@PathVariable("userId")String userId,
+		@CurrentSecurityContext(expression="authentication") JwtAuthenticationToken authenticationToken,
+		@PathVariable("registrationId")String registrationId) {
+		String email=authenticationToken.getName();
+		authService.updateUser(email, userId, registrationId);
+		return userId+authenticationToken.getName();
 	}
 }

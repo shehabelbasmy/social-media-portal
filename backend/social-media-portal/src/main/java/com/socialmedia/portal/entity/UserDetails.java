@@ -50,4 +50,20 @@ public class UserDetails extends AbstractEntity{
 	@OneToOne(fetch = FetchType.EAGER,cascade = ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+//	@JoinColumns({
+//		@JoinColumn (name="pricipal_name",table = "oauth2_authorized_client",referencedColumnName = "pricipal_name"),
+//		@JoinColumn (name="client_registration_id",table = "oauth2_authorized_client",referencedColumnName = "client_registration_id")})
+//	@ElementCollection()
+//	@JoinTable(name="user_oath2_authorized_client",
+//		joinColumns = {
+//			@JoinColumn(name="pricipal_name"),
+//			@JoinColumn(name="client_registration_id")},
+//		inverseJoinColumns = {
+//			@JoinColumn(name="pricipal_name",table = ""),
+//			@JoinColumn(name="client_registration_id")})
+//	@PrimaryKeyJoinColumns({
+//		@PrimaryKeyJoinColumn(name = "pricipal_name"),
+//		@PrimaryKeyJoinColumn(name = "client_registration_id")})
+//	private Set<OAuth2AuthorizedClient> auth2AuthorizedClients;
 }

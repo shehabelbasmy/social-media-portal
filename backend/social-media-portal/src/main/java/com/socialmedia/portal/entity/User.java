@@ -14,10 +14,12 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.socialmedia.portal.framework.entity.AbstractEntity;
+import com.socialmedia.portal.security.entity.MyOAuth2AuthorizedClient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,4 +49,7 @@ public class User extends AbstractEntity{
 	
 	@OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
 	private UserDetails userDetails;
+	
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+	private Set<MyOAuth2AuthorizedClient> auth2AuthorizedClients;
 }

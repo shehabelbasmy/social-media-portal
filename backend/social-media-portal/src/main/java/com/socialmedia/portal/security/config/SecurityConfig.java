@@ -12,17 +12,19 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -35,6 +37,7 @@ import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+//(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 @AllArgsConstructor
 public class SecurityConfig {
@@ -42,30 +45,47 @@ public class SecurityConfig {
 	private final UserDetailsService userDetailsDervice;
 	private final RsaKeyProperties jwtConfigProperties;
 	private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
-	
+	private final AuthenticationSuccessHandler successHandler;
 	@Bean
-	@Order(value = Ordered.HIGHEST_PRECEDENCE)
+	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http,
-			ClientRegistrationRepository clientRegistrationRepository
-			) throws Exception {
-		return http.csrf().disable()	
+			AuthenticationManager authenticationManager) throws Exception {
+//		http.addFilterBefore(new BearerTokenAuthenticationFilter(authenticationManager),OAuth2AuthorizationRequestRedirectFilter.class);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return http.csrf().disable()
+//			.requestMatcher(new AntPathRequestMatcher("/api/**"))
 			.authorizeRequests(
 				auth -> auth.antMatchers("/api/v1/auth/**").permitAll()
 					.anyRequest().authenticated())
 			.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-			.sessionManagement(session -> 
-				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.oauth2Client()
+//			.oauth2Client()
+//			.authorizationCodeGrant()
+//			.and()
+//			.authorizedClientService(oAuth2AuthorizedClientService)
+//			.and()
+			.oauth2Login()
+			.defaultSuccessUrl("/api/v1/auth/test")
+//			.permitAll(true)
+			.successHandler(successHandler)
 			.authorizedClientService(oAuth2AuthorizedClientService)
 			.and()
-			.cors().disable()
 			.build();
 	}
-
-	
-	
+//	@Bean
+//	@Order(1)
+//	public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception {
+//		return httpSecurity
+//				.authorizeRequests().anyRequest().authenticated()
+//				.and()
+//				.oauth2Login().loginPage("/oauth2/authorization/**")
+//				.authorizedClientService(oAuth2AuthorizedClientService)
+//				.successHandler(successHandler)
+//				.and()
+//				.build();
+//	}
 	@Bean
 	public AuthenticationManager authManager(HttpSecurity httpSecurity) throws Exception {
+		
 		return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class).build();
 	}
 
