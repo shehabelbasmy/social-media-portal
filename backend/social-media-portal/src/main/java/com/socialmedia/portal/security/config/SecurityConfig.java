@@ -2,8 +2,6 @@ package com.socialmedia.portal.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,6 +14,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestCustomizers;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -29,6 +31,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.socialmedia.portal.security.service.CustomDefaultOAuth2UserService;
 
 import lombok.AllArgsConstructor;
 
@@ -43,21 +46,55 @@ public class SecurityConfig {
 	private final RsaKeyProperties jwtConfigProperties;
 	private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 	private final AuthenticationSuccessHandler successHandler;
+	private final CustomDefaultOAuth2UserService oidcUserService;
 	@Bean
-	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http,
-			AuthenticationManager authenticationManager) throws Exception {
+			OAuth2AuthorizationRequestResolver resolver) throws Exception {
 		return http.csrf().disable()
 			.authorizeRequests(
 				auth -> auth.antMatchers("/api/v1/auth/**").permitAll()
 					.anyRequest().authenticated())
 			.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-			.oauth2Login()
-			.successHandler(successHandler)
-			.authorizedClientService(oAuth2AuthorizedClientService)
-			.and()
+			.oauth2Login(auth->
+				auth
+				.authorizationEndpoint(a->
+					a.authorizationRequestResolver(resolver))
+				.successHandler(successHandler)
+				.authorizedClientService(oAuth2AuthorizedClientService)
+				.userInfoEndpoint(info->info.userService(oidcUserService)))
+//			.oauth2Login()
+//			.successHandler(successHandler)
+//			.authorizedClientService(oAuth2AuthorizedClientService)
+//			.and()
 			.build();
 	}
+	
+//	@Bean
+//	@Order(Ordered.HIGHEST_PRECEDENCE)
+//	public SecurityFilterChain chain(HttpSecurity http,
+//			OAuth2AuthorizationRequestResolver resolver) throws Exception {
+//		return http.csrf().disable()
+//				.requestMatcher(new AntPathRequestMatcher("/pkce/**"))
+//				.authorizeRequests()
+//				.anyRequest().authenticated()
+//				.and()
+//				.oauth2Login(auth->
+//					auth
+//					.authorizationEndpoint(a->
+//						a.authorizationRequestResolver(resolver))
+//					.successHandler(successHandler)
+//					.authorizedClientService(oAuth2AuthorizedClientService))
+//				.build();
+//
+//	}
+	
+	@Bean
+    public OAuth2AuthorizationRequestResolver pkceResolver(ClientRegistrationRepository repo) {
+        DefaultOAuth2AuthorizationRequestResolver resolver = new DefaultOAuth2AuthorizationRequestResolver(repo, "/oauth2/authorization");
+//        DefaultOAuth2AuthorizationRequestResolver resolver = new DefaultOAuth2AuthorizationRequestResolver(repo, "/pkce/oauth2/authorization");
+        resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
+        return resolver;
+    }
 
 	@Bean
 	public AuthenticationManager authManager(HttpSecurity httpSecurity) throws Exception {

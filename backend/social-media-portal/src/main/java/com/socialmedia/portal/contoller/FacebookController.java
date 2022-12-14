@@ -41,7 +41,7 @@ public class FacebookController {
 //	    String uriString = uriBuilder.toUriString();
 //		ResponseEntity<String> request = new RestTemplate().exchange(uriString, 
 //                HttpMethod.GET, new HttpEntity<>(headers), String.class);
-		return authentication.getClientRegistration().getClientName();
+		return authentication.getAccessToken().getTokenValue();
 //		return null;
 	}
 }

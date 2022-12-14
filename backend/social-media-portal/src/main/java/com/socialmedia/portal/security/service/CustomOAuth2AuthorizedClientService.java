@@ -80,8 +80,7 @@ public class CustomOAuth2AuthorizedClientService implements OAuth2AuthorizedClie
 			TokenType.BEARER,
 			auth2AuthorizedClient.getAccessTokenValue(),
 			auth2AuthorizedClient.getAccessTokenIssuedAt().toInstant(ZoneOffset.UTC),
-			auth2AuthorizedClient.getAccessTokenExpiredAt().toInstant(ZoneOffset.UTC),
-			Set.of(auth2AuthorizedClient.getAccessTokenScopes()));
+			auth2AuthorizedClient.getAccessTokenExpiredAt().toInstant(ZoneOffset.UTC));
 		return oAuth2AccessToken;
 	}
 	
@@ -96,7 +95,6 @@ public class CustomOAuth2AuthorizedClientService implements OAuth2AuthorizedClie
 			.accessTokenValue(authorizedClient.getAccessToken().getTokenValue())
 			.accessTokenIssuedAt(LocalDateTime.ofInstant(authorizedClient.getAccessToken().getIssuedAt(), ZoneOffset.UTC))
 			.accessTokenExpiredAt(LocalDateTime.ofInstant(authorizedClient.getAccessToken().getExpiresAt(), ZoneOffset.UTC))
-			.accessTokenScopes(authorizedClient.getAccessToken().getScopes().toString())
 			.build();
 		return build;
 	}

@@ -17,7 +17,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.socialmedia.portal.entity.User;
 
@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="oauth2_authorized_client_1")
+@Table(name="oauth2_authorized_client")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter@Getter
@@ -50,10 +50,7 @@ public class MyOAuth2AuthorizedClient {
 	
 	@Column(name="access_token_expired_at")
 	private LocalDateTime accessTokenExpiredAt;
-	
-	@Column(name="access_token_scopes")
-	private String accessTokenScopes;
-	
+
 	@Lob
 	@Column(name="refresh_token_value",columnDefinition = "BLOB")
 	private String refreshTokenValue;
@@ -61,12 +58,9 @@ public class MyOAuth2AuthorizedClient {
 	@Column(name="refresh_token_issued_at")
 	private LocalDateTime refreshTokenIssuedAt;
 	
-	@Column(name="created_at")
-	@CreationTimestamp
-	private LocalDateTime createdAt;
-	
 	@Column(name="updated_at")
-	private LocalDateTime updatedAt;
+	@UpdateTimestamp
+	private LocalDateTime createdAt;
 	
 	@ManyToOne(fetch = FetchType.LAZY,cascade = {DETACH,MERGE,PERSIST,REFRESH})
 	@JoinColumn(name = "user_entity_id")
