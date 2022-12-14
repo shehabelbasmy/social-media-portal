@@ -13,7 +13,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -41,22 +40,15 @@ public class MyOAuth2AuthorizedClient {
 	@Column(name="access_token_type")
 	private String accessTokenType;
 	
-	@Lob
-	@Column(name="access_token_value",columnDefinition = "BLOB")
+//	@Lob
+	@Column(name="access_token_value",length = 500)
 	private String accessTokenValue;
-	
+
 	@Column(name="access_token_issued_at")
 	private LocalDateTime accessTokenIssuedAt;
 	
 	@Column(name="access_token_expired_at")
 	private LocalDateTime accessTokenExpiredAt;
-
-	@Lob
-	@Column(name="refresh_token_value",columnDefinition = "BLOB")
-	private String refreshTokenValue;
-	
-	@Column(name="refresh_token_issued_at")
-	private LocalDateTime refreshTokenIssuedAt;
 	
 	@Column(name="updated_at")
 	@UpdateTimestamp
@@ -75,5 +67,5 @@ public class MyOAuth2AuthorizedClient {
 	public boolean equals(Object obj) {
 		return id.equals(obj);
 	}
-	
+
 }

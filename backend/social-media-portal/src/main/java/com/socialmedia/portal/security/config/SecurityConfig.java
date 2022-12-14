@@ -2,6 +2,8 @@ package com.socialmedia.portal.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -57,41 +59,33 @@ public class SecurityConfig {
 			.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
 			.oauth2Login(auth->
 				auth
-				.authorizationEndpoint(a->
+//				.authorizationEndpoint(a->
+//						a.authorizationRequestResolver(resolver))
+				.successHandler(successHandler)
+				.authorizedClientService(oAuth2AuthorizedClientService)
+				.userInfoEndpoint(info->info.userService(oidcUserService)))
+			.build();
+	}
+	
+	@Bean
+	@Order(Ordered.HIGHEST_PRECEDENCE)
+	public SecurityFilterChain securityFilterChainTwitter(HttpSecurity http,
+			OAuth2AuthorizationRequestResolver resolver) throws Exception {
+		return http.requestMatchers().antMatchers("/oauth2/authorization/twitter","/login/oauth2/code/twitter")
+			.and()
+			.authorizeRequests().anyRequest().authenticated()
+			.and()
+			.oauth2Login(auth->
+				auth.authorizationEndpoint(a->
 					a.authorizationRequestResolver(resolver))
 				.successHandler(successHandler)
 				.authorizedClientService(oAuth2AuthorizedClientService)
 				.userInfoEndpoint(info->info.userService(oidcUserService)))
-//			.oauth2Login()
-//			.successHandler(successHandler)
-//			.authorizedClientService(oAuth2AuthorizedClientService)
-//			.and()
 			.build();
 	}
-	
-//	@Bean
-//	@Order(Ordered.HIGHEST_PRECEDENCE)
-//	public SecurityFilterChain chain(HttpSecurity http,
-//			OAuth2AuthorizationRequestResolver resolver) throws Exception {
-//		return http.csrf().disable()
-//				.requestMatcher(new AntPathRequestMatcher("/pkce/**"))
-//				.authorizeRequests()
-//				.anyRequest().authenticated()
-//				.and()
-//				.oauth2Login(auth->
-//					auth
-//					.authorizationEndpoint(a->
-//						a.authorizationRequestResolver(resolver))
-//					.successHandler(successHandler)
-//					.authorizedClientService(oAuth2AuthorizedClientService))
-//				.build();
-//
-//	}
-	
 	@Bean
     public OAuth2AuthorizationRequestResolver pkceResolver(ClientRegistrationRepository repo) {
         DefaultOAuth2AuthorizationRequestResolver resolver = new DefaultOAuth2AuthorizationRequestResolver(repo, "/oauth2/authorization");
-//        DefaultOAuth2AuthorizationRequestResolver resolver = new DefaultOAuth2AuthorizationRequestResolver(repo, "/pkce/oauth2/authorization");
         resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
         return resolver;
     }
