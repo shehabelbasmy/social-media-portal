@@ -41,7 +41,6 @@ import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-//(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 @AllArgsConstructor
 public class SecurityConfig {
@@ -55,21 +54,16 @@ public class SecurityConfig {
 	
 	@Bean
 	@Order(Ordered.LOWEST_PRECEDENCE)
-	public SecurityFilterChain securityFilterChain(HttpSecurity http,
+	public SecurityFilterChain securityFilterChainApi(HttpSecurity http,
 			OAuth2AuthorizationRequestResolver resolver) throws Exception {
 		return http.requestMatchers().antMatchers("/api/v1/**")
-				.and()
-				.csrf().disable()
-				.authorizeRequests(
-						auth -> auth.antMatchers("/api/v1/auth/**").permitAll()
-						.anyRequest().authenticated())
-				.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-//				.oauth2Login(auth->
-//					auth.successHandler(successHandler)
-//					.authorizedClientService(oAuth2AuthorizedClientService)
-//					.userInfoEndpoint(info->info.userService(userService))
-//					.tokenEndpoint(a->a.accessTokenResponseClient(accessTokenResponse)))
-				.build();
+			.and()
+			.csrf().disable()
+			.authorizeRequests(
+					auth -> auth.antMatchers("/api/v1/auth/**").permitAll()
+					.anyRequest().authenticated())
+			.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+			.build();
 	}
 	
 	@Bean
@@ -91,28 +85,28 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChainFacebook(HttpSecurity http,
 			OAuth2AuthorizationRequestResolver resolver) throws Exception {
 		return http.requestMatchers().antMatchers("/oauth2/authorization/facebook","/login/oauth2/code/facebook")
-				.and()
-				.authorizeRequests().anyRequest().authenticated()
-				.and()
-				.oauth2Login(auth->
-					auth.successHandler(successHandler)
-					.authorizedClientService(oAuth2AuthorizedClientService))
-				.build();
+			.and()
+			.authorizeRequests().anyRequest().authenticated()
+			.and()
+			.oauth2Login(auth->
+				auth.successHandler(successHandler)
+				.authorizedClientService(oAuth2AuthorizedClientService))
+			.build();
 	}
 	@Bean
 	@Order(3)
 	public SecurityFilterChain securityFilterChainLinkedin(HttpSecurity http,
 			OAuth2AuthorizationRequestResolver resolver) throws Exception {
 		return http.requestMatchers().antMatchers("/oauth2/authorization/linkedin","/login/oauth2/code/linkedin")
-				.and()
-				.authorizeRequests().anyRequest().authenticated()
-				.and()
-				.oauth2Login(auth->
-					auth.successHandler(successHandler)
-					.authorizedClientService(oAuth2AuthorizedClientService)
-					.userInfoEndpoint(info->info.userService(userService))
-					.tokenEndpoint(a->a.accessTokenResponseClient(accessTokenResponse)))
-				.build();
+			.and()
+			.authorizeRequests().anyRequest().authenticated()
+			.and()
+			.oauth2Login(auth->
+				auth.successHandler(successHandler)
+				.authorizedClientService(oAuth2AuthorizedClientService)
+				.userInfoEndpoint(info->info.userService(userService))
+				.tokenEndpoint(a->a.accessTokenResponseClient(accessTokenResponse)))
+			.build();
 	}
 	@Bean
     public OAuth2AuthorizationRequestResolver pkceResolver(ClientRegistrationRepository repo) {
@@ -123,7 +117,6 @@ public class SecurityConfig {
 
 	@Bean
 	public AuthenticationManager authManager(HttpSecurity httpSecurity) throws Exception {
-		
 		return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class).build();
 	}
 
