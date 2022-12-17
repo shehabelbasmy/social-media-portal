@@ -5,8 +5,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.socialmedia.portal.security.request.AuthenticationRequest;
-import com.socialmedia.portal.security.request.TokenDto;
+import com.socialmedia.portal.security.response.dto.AuthenticationRequest;
+import com.socialmedia.portal.security.response.dto.TokenDto;
 import com.socialmedia.portal.service.UserDetailsServiceImpl;
 
 import lombok.AllArgsConstructor;

@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import com.socialmedia.portal.security.request.TokenDto;
+import com.socialmedia.portal.security.response.dto.TokenDto;
 
 import lombok.AllArgsConstructor;
 

@@ -23,7 +23,7 @@ public class CustomOAuth2AuthorizationSuccessHandler implements OAuth2Authorizat
 			Map<String, Object> attributes) {
 		ClientRegistration findByRegistrationId = clientRegistrationRepository.findByRegistrationId("facebook");
 		
-		System.out.println(findByRegistrationId);
+		System.err.println(findByRegistrationId);
 	}
 
 }

@@ -18,7 +18,7 @@ public class FacebookController {
 
 	@GetMapping("/page/post")
 	public String addPost(
-		@RegisteredOAuth2AuthorizedClient("facebook") OAuth2AuthorizedClient authentication) {
+		@RegisteredOAuth2AuthorizedClient("linkedin") OAuth2AuthorizedClient authentication) {
 //		String userId= authentication.getPrincipalName();
 //		String token=authentication.getAccessToken().getTokenValue();
 //		String url="https://graph.facebook.com/"+userId+"/accounts";

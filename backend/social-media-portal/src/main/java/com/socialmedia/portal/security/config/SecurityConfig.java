@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestCustomizers;
@@ -48,44 +50,73 @@ public class SecurityConfig {
 	private final RsaKeyProperties jwtConfigProperties;
 	private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 	private final AuthenticationSuccessHandler successHandler;
-	private final CustomDefaultOAuth2UserService oidcUserService;
+	private final CustomDefaultOAuth2UserService userService;
+	private final OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponse;
+	
 	@Bean
+	@Order(Ordered.LOWEST_PRECEDENCE)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http,
 			OAuth2AuthorizationRequestResolver resolver) throws Exception {
-		return http.csrf().disable()
-			.authorizeRequests(
-				auth -> auth.antMatchers("/api/v1/auth/**").permitAll()
-					.anyRequest().authenticated())
-			.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-			.oauth2Login(auth->
-				auth
-//				.authorizationEndpoint(a->
-//						a.authorizationRequestResolver(resolver))
-				.successHandler(successHandler)
-				.authorizedClientService(oAuth2AuthorizedClientService)
-				.userInfoEndpoint(info->info.userService(oidcUserService)))
-			.build();
+		return http.requestMatchers().antMatchers("/api/v1/**")
+				.and()
+				.csrf().disable()
+				.authorizeRequests(
+						auth -> auth.antMatchers("/api/v1/auth/**").permitAll()
+						.anyRequest().authenticated())
+				.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+//				.oauth2Login(auth->
+//					auth.successHandler(successHandler)
+//					.authorizedClientService(oAuth2AuthorizedClientService)
+//					.userInfoEndpoint(info->info.userService(userService))
+//					.tokenEndpoint(a->a.accessTokenResponseClient(accessTokenResponse)))
+				.build();
 	}
 	
 	@Bean
-	@Order(Ordered.HIGHEST_PRECEDENCE)
+	@Order(1)
 	public SecurityFilterChain securityFilterChainTwitter(HttpSecurity http,
 			OAuth2AuthorizationRequestResolver resolver) throws Exception {
-		return http.requestMatchers().antMatchers("/oauth2/authorization/twitter","/login/oauth2/code/twitter")
+		return http.requestMatchers().antMatchers("/pkce/oauth2/authorization/twitter","/login/oauth2/code/twitter")
 			.and()
 			.authorizeRequests().anyRequest().authenticated()
 			.and()
 			.oauth2Login(auth->
-				auth.authorizationEndpoint(a->
-					a.authorizationRequestResolver(resolver))
+				auth.authorizationEndpoint(a->a.authorizationRequestResolver(resolver))
 				.successHandler(successHandler)
-				.authorizedClientService(oAuth2AuthorizedClientService)
-				.userInfoEndpoint(info->info.userService(oidcUserService)))
+				.authorizedClientService(oAuth2AuthorizedClientService))
 			.build();
 	}
 	@Bean
+	@Order(2)
+	public SecurityFilterChain securityFilterChainFacebook(HttpSecurity http,
+			OAuth2AuthorizationRequestResolver resolver) throws Exception {
+		return http.requestMatchers().antMatchers("/oauth2/authorization/facebook","/login/oauth2/code/facebook")
+				.and()
+				.authorizeRequests().anyRequest().authenticated()
+				.and()
+				.oauth2Login(auth->
+					auth.successHandler(successHandler)
+					.authorizedClientService(oAuth2AuthorizedClientService))
+				.build();
+	}
+	@Bean
+	@Order(3)
+	public SecurityFilterChain securityFilterChainLinkedin(HttpSecurity http,
+			OAuth2AuthorizationRequestResolver resolver) throws Exception {
+		return http.requestMatchers().antMatchers("/oauth2/authorization/linkedin","/login/oauth2/code/linkedin")
+				.and()
+				.authorizeRequests().anyRequest().authenticated()
+				.and()
+				.oauth2Login(auth->
+					auth.successHandler(successHandler)
+					.authorizedClientService(oAuth2AuthorizedClientService)
+					.userInfoEndpoint(info->info.userService(userService))
+					.tokenEndpoint(a->a.accessTokenResponseClient(accessTokenResponse)))
+				.build();
+	}
+	@Bean
     public OAuth2AuthorizationRequestResolver pkceResolver(ClientRegistrationRepository repo) {
-        DefaultOAuth2AuthorizationRequestResolver resolver = new DefaultOAuth2AuthorizationRequestResolver(repo, "/oauth2/authorization");
+        DefaultOAuth2AuthorizationRequestResolver resolver = new DefaultOAuth2AuthorizationRequestResolver(repo, "/pkce/oauth2/authorization");
         resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
         return resolver;
     }
@@ -116,7 +147,8 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtEncoder jwtEncoder() {
-		JWK jwk = new RSAKey.Builder(jwtConfigProperties.getPublicKey()).privateKey(jwtConfigProperties.getPrivateKey())
+		JWK jwk = new RSAKey.Builder(jwtConfigProperties.getPublicKey())
+				.privateKey(jwtConfigProperties.getPrivateKey())
 				.build();
 		JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 		return new NimbusJwtEncoder(jwks);

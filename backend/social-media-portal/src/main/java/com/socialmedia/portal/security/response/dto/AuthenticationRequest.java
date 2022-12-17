@@ -1,4 +1,4 @@
-package com.socialmedia.portal.security.request;
+package com.socialmedia.portal.security.response.dto;
 
 import javax.validation.constraints.NotBlank;
 

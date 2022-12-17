@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.socialmedia.portal.security.request.AuthenticationRequest;
-import com.socialmedia.portal.security.request.TokenDto;
+import com.socialmedia.portal.security.response.dto.AuthenticationRequest;
+import com.socialmedia.portal.security.response.dto.TokenDto;
 import com.socialmedia.portal.security.service.AuthenticationService;
 
 import lombok.AllArgsConstructor;
