@@ -8,11 +8,11 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.socialmedia.portal</groupId>
-	<artifactId>social-media-porta</artifactId>
+	<artifactId>social-media-portal</artifactId>
 	<version>1.0 Version</version>
-	<name>social-media-porta</name>
+	<name>social-media-portal</name>
 	<description>Social Media Portal</description>
-	<!--<packaging>pom</packaging>-->
+	<packaging>pom</packaging>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2021.0.5</spring-cloud.version>
@@ -106,11 +106,7 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>1.5.3.Final</version>
-		</dependency>
+		
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

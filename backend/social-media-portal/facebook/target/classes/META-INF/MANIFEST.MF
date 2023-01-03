@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 17
+Implementation-Title: facebook
+Implementation-Version: 1.0 Version
+Created-By: Maven Integration for Eclipse
+
