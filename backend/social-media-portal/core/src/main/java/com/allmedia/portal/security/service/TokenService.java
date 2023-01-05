@@ -21,7 +21,8 @@ import lombok.AllArgsConstructor;
 public class TokenService {
 
 	private final JwtEncoder jwtEncoder;
-
+//	private final UserDetailsServiceExt userDetailsService;
+	
 	public TokenDto generateToken(Authentication authenticationToken) {
 		return TokenDto.builder().issuedAt(LocalDateTime.now()).expiredAt(LocalDateTime.now().plusHours(1))
 				.token(generateJwt(authenticationToken)).userEmail(authenticationToken.getName()).build();
@@ -29,10 +30,14 @@ public class TokenService {
 
 	private String generateJwt(Authentication authenticationToken) {
 		String scope = authenticationToken.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-				.collect(Collectors.joining(" "));
+			.collect(Collectors.joining(" "));
+//		User user = userDetailsService.getUserByEmail(authenticationToken.getName());
 		JwtClaimsSet claims = JwtClaimsSet.builder().issuedAt(Instant.now())
-				.expiresAt(Instant.now().plus(60, ChronoUnit.HOURS)).subject(authenticationToken.getName())
-				.claim("scope", scope).build();
+				.expiresAt(Instant.now().plus(60, ChronoUnit.HOURS))
+				.subject(authenticationToken.getName())
+				.claim("scope", scope)
+//				.claim("facebookUser", user.getOauth2Client().stream().map(e->e.getUserId().toString()).toList())
+				.build();
 		return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 	}
 

@@ -2,6 +2,7 @@ package com.allmedia.portal.security.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.allmedia.portal.security.request.AuthenticationRequest;
@@ -17,10 +18,10 @@ public class AuthenticationService {
 	private final TokenService tokenService;
 	
 	public TokenDto authenticate(AuthenticationRequest authRequest) {
-		UsernamePasswordAuthenticationToken authenticationToken = 
+		var authenticationToken = 
 			new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword());
-		authenticationToken=(UsernamePasswordAuthenticationToken)authenticationManager.authenticate(authenticationToken);
-		return tokenService.generateToken(authenticationToken);
+		Authentication jwtToken=authenticationManager.authenticate(authenticationToken);
+		return tokenService.generateToken(jwtToken);
 	}
 
 }

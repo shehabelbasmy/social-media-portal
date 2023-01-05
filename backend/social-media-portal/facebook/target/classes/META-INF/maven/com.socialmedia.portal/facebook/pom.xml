@@ -4,6 +4,7 @@
 		<groupId>com.socialmedia.portal</groupId>
 		<artifactId>social-media-portal</artifactId>
 		<version>1.0 Version</version>
+		<relativePath/>
 	</parent>
 	<artifactId>facebook</artifactId>
 	<name>facebook</name>

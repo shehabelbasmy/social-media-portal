@@ -36,5 +36,12 @@ public class UserDetailsServiceImpl implements UserDetailsServiceExt {
 			);
 	}
 
+	@Override
+	public User getUserByEmail(String email) {
+		Optional<User> optionalUser = userRepo.findByEmail(email);
+		User user= optionalUser.orElseThrow(()->new UsernameNotFoundException("Incorrect Username Or Password"));
+		return user;
+	}
+
 	
 }

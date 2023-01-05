@@ -27,12 +27,15 @@ public class WebTokenDetails {
 	private String email;
 	
 	private List<String> roles;
-
+	
+	private String facebookUser;
+	
 	@PostConstruct
 	private void init() {
 		var authenticationToken= (JwtAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
 		this.email=authenticationToken.getName();
 		this.roles=authenticationToken.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+		
 	}
 	
 }

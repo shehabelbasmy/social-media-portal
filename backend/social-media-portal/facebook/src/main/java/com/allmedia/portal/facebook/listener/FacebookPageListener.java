@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import com.allmedia.portal.facebook.client.FacebookAccesTokenPageClient;
 import com.allmedia.portal.facebook.event.FacebookSuccessLogin;
-import com.allmedia.portal.facebook.oauth2.response.FBPageTokenOAuthResponse;
 import com.allmedia.portal.facebook.service.FacebookPageService;
 
 import lombok.AllArgsConstructor;
@@ -16,12 +15,12 @@ public class FacebookPageListener implements ApplicationListener<FacebookSuccess
 
 	private final FacebookAccesTokenPageClient facebookAccesTokenPageClient;
 	private final FacebookPageService facebookPageService;
-	
+
 	@Override
 	public void onApplicationEvent(FacebookSuccessLogin event) {
 		String userId = event.getUserId();
 		String token=event.getToken();
-		FBPageTokenOAuthResponse userPages = facebookAccesTokenPageClient.getPageToken(userId, token);
+		var userPages = facebookAccesTokenPageClient.getPageToken(userId, token);
 		facebookPageService.savePages(userPages);
 	}
 

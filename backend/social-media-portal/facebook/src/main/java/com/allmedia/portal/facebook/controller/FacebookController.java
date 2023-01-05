@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 public class FacebookController {
 
 	private final FacebookUserService facebookUserService;
-	
 	@GetMapping("/user/token")
 	public String getUserToken() {
 		var facebbookUser = facebookUserService.findByUserEmail();
@@ -26,4 +25,5 @@ public class FacebookController {
 		var facebbookUser = facebookUserService.findByUserEmail();
 		return new String(facebbookUser.getFacebookPage().iterator().next().getToken());
 	}
+	
 }

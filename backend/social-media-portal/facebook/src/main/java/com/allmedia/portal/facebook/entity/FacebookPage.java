@@ -6,12 +6,14 @@ import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REFRESH;
 
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NaturalId;
@@ -44,6 +46,9 @@ public class FacebookPage extends AbstractEntity{
 	@ManyToOne(cascade = {DETACH,MERGE,PERSIST,REFRESH},fetch = FetchType.LAZY)
 	@JoinColumn(name = "facebook_user_id")
 	private FacebookUser facebookUser;
+	
+	@OneToMany(orphanRemoval = true,mappedBy = "facebookPage")
+	private Set<FacebookPageConv > conversations;
 	
 	@Override
 	public boolean equals(Object obj) {

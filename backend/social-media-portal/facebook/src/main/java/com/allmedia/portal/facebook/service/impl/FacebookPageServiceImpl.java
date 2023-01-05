@@ -11,6 +11,7 @@ import com.allmedia.portal.facebook.client.FacebookPageClient;
 import com.allmedia.portal.facebook.dto.request.FBPageAddPostRequest;
 import com.allmedia.portal.facebook.dto.response.FBPageDtoResponse;
 import com.allmedia.portal.facebook.entity.FacebookPage;
+import com.allmedia.portal.facebook.entity.FacebookPageConv;
 import com.allmedia.portal.facebook.entity.FacebookUser;
 import com.allmedia.portal.facebook.mapper.FacebookPageMapper;
 import com.allmedia.portal.facebook.oauth2.request.FBPageAddPostOauthRequest;
@@ -32,6 +33,7 @@ public class FacebookPageServiceImpl implements FacebookPageService {
 	private final FacebookPageRepo facebookPageRepo;
 	private final FacebookPageClient facebookPageClient;
 	private final FacebookUserService facebookUserService;
+//	private final WebTokenDetails webTokenDetails;
 	
 	@Override
 	public List<FBPageDtoResponse> getAllPages() {
@@ -69,6 +71,15 @@ public class FacebookPageServiceImpl implements FacebookPageService {
 		facebookUser.getFacebookPage().addAll(facebookPages);
 		facebookPages.forEach(e->e.setFacebookUser(facebookUser));
 		facebookUserService.save(facebookUser);
+	}
+
+	@Override
+	public Set<FacebookPageConv> getConv(Long pageId) {
+//		String facebookUser = webTokenDetails.getFacebookUser();
+//		Optional<Set<FacebookPageConv>> result= facebookPageRepo.getPageConv(pageId,facebookUser);
+		return facebookPageRepo.findByPageId(pageId)
+			.map(e->e.getConversations())
+			.orElseGet(null);
 	}
 
 }
