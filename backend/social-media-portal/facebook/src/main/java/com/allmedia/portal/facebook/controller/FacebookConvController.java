@@ -23,4 +23,10 @@ public class FacebookConvController {
 		var body = facebookConvService.getConv(pageId);
 		return ResponseEntity.ok(body);
 	}
+	
+	@GetMapping("/list/sync/{pageId}")
+	public ResponseEntity<?> getConvSync(@PathVariable("pageId")Long pageId){
+		var body = facebookConvService.getConvSync(pageId);
+		return ResponseEntity.ok(body);
+	}
 }

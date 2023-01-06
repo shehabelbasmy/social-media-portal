@@ -1,4 +1,4 @@
-package com.allmedia.portal.service;
+package com.allmedia.portal.security.service;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;

@@ -17,7 +17,5 @@ public class ConvDto {
 	
 	private String fromName;
 	
-	private String fromId;
-	
 	private ZonedDateTime dateTime;
 }

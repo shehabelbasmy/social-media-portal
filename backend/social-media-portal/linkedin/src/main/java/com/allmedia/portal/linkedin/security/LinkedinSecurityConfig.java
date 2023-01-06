@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.allmedia.portal.linkedin.service.LinkedinUserService;
-import com.allmedia.portal.service.GlobalOAuth2UserService;
+import com.allmedia.portal.security.service.GlobalOAuth2UserService;
 
 import lombok.AllArgsConstructor;
 

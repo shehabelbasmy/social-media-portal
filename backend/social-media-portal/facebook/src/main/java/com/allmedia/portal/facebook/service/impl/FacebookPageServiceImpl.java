@@ -82,4 +82,9 @@ public class FacebookPageServiceImpl implements FacebookPageService {
 			.orElseGet(null);
 	}
 
+	@Override
+	public FacebookPage getPage(Long pageId) {
+		return facebookPageRepo.findByPageId(pageId).orElseGet(null);
+	}
+
 }

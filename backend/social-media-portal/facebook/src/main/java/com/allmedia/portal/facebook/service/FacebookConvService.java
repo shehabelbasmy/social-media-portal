@@ -8,4 +8,6 @@ public interface FacebookConvService {
 
 	List<ConvDto> getConv(Long pageId);
 
+	List<ConvDto> getConvSync(Long pageId);
+
 }
