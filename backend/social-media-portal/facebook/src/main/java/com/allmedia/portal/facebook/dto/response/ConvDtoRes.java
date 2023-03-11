@@ -11,11 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ConvDto {
+public class ConvDtoRes {
 
+	
 	private String id;
-	
+
 	private String fromName;
-	
-	private ZonedDateTime dateTime;
+
+	private ZonedDateTime updatedTime;
+
 }

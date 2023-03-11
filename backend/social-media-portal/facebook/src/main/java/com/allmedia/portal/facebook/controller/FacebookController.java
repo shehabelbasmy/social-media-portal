@@ -23,7 +23,7 @@ public class FacebookController {
 	@GetMapping("/page/token")
 	public Object getPageToken() {
 		var facebbookUser = facebookUserService.findByUserEmail();
-		return new String(facebbookUser.getFacebookPage().iterator().next().getToken());
+		return new String(facebbookUser.getFacebookPage().stream().filter(e->e.getPageId().toString().equals("105636675729201")).findFirst().get().getToken());
 	}
 	
 }

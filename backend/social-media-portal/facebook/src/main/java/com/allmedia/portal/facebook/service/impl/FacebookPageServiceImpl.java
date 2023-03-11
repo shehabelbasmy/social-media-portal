@@ -22,6 +22,7 @@ import com.allmedia.portal.facebook.oauth2.response.FBPageTokenOAuthResponse;
 import com.allmedia.portal.facebook.repo.FacebookPageRepo;
 import com.allmedia.portal.facebook.service.FacebookPageService;
 import com.allmedia.portal.facebook.service.FacebookUserService;
+import com.allmedia.portal.util.WebTokenDetails;
 
 import lombok.AllArgsConstructor;
 
@@ -33,8 +34,7 @@ public class FacebookPageServiceImpl implements FacebookPageService {
 	private final FacebookPageRepo facebookPageRepo;
 	private final FacebookPageClient facebookPageClient;
 	private final FacebookUserService facebookUserService;
-//	private final WebTokenDetails webTokenDetails;
-	
+	private final WebTokenDetails webTokenDetails;
 	@Override
 	public List<FBPageDtoResponse> getAllPages() {
 		FacebookUser facebookUser = facebookUserService.findByUserEmail();
@@ -43,7 +43,9 @@ public class FacebookPageServiceImpl implements FacebookPageService {
 
 	@Override
 	public List<?> getAllPosts(Long pageId) {
-		Optional<FacebookPage> facebookPage=facebookPageRepo.findByPageId(pageId);
+		String email=webTokenDetails.getEmail();
+		Optional<FacebookPage> facebookPage=
+			facebookPageRepo.findByPageIdAndFacebookUserUserEmail(pageId,email);
 		String token = new String(facebookPage.get().getToken());
 		var  request=FBPagePostsOAuthRequest.builder().token(token).build(); 
 		FBPagePostsOAuthResponse allPosts = facebookPageClient.getAllPosts(request.map(), pageId);
@@ -69,22 +71,25 @@ public class FacebookPageServiceImpl implements FacebookPageService {
 		FacebookUser facebookUser = facebookUserService.findByUserEmail();
 		facebookUser.getFacebookPage().clear();
 		facebookUser.getFacebookPage().addAll(facebookPages);
-		facebookPages.forEach(e->e.setFacebookUser(facebookUser));
+		facebookPages.forEach(facebookPage->{
+			facebookPage.setFacebookUser(facebookUser);
+		});
 		facebookUserService.save(facebookUser);
 	}
 
 	@Override
 	public Set<FacebookPageConv> getConv(Long pageId) {
-//		String facebookUser = webTokenDetails.getFacebookUser();
-//		Optional<Set<FacebookPageConv>> result= facebookPageRepo.getPageConv(pageId,facebookUser);
-		return facebookPageRepo.findByPageId(pageId)
+		String email = webTokenDetails.getEmail();
+		return facebookPageRepo.findByPageIdAndFacebookUserUserEmail(pageId,email)
 			.map(e->e.getConversations())
-			.orElseGet(null);
+			.orElseGet(()->{return null;});
 	}
 
 	@Override
 	public FacebookPage getPage(Long pageId) {
-		return facebookPageRepo.findByPageId(pageId).orElseGet(null);
+		String email =webTokenDetails.getEmail(); 
+		return facebookPageRepo.findByPageIdAndFacebookUserUserEmail(pageId,email)
+			.orElseGet(()->{return null;});
 	}
 
 }

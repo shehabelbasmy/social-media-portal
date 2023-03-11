@@ -3,30 +3,29 @@ package com.allmedia.portal.facebook.oauth2.response;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class FBPageConvResposne {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class FBPageConvOAuthResposne {
 	
 	@JsonProperty("data")
-	private List<Data> data;
+	private List<Resposne> data;
 	
-	@Setter
-	@Getter
-	@AllArgsConstructor
+	@Data
 	@NoArgsConstructor
+	@AllArgsConstructor
 	@Builder
-	public static class Data{
+	public static class Resposne{
 		
 		@JsonProperty("id")
 		private String id;
@@ -37,21 +36,19 @@ public class FBPageConvResposne {
 		@JsonProperty("participants")
 		private Participants participants;
 		
-		@Builder
-		@AllArgsConstructor
+		@Data
 		@NoArgsConstructor
-		@Setter
-		@Getter
+		@AllArgsConstructor
+		@Builder
 		public static class Participants{
 			
 			@JsonProperty("data")
 			private List<Data1> data;
 
-			@Builder
-			@AllArgsConstructor
+			@Data
 			@NoArgsConstructor
-			@Setter
-			@Getter
+			@AllArgsConstructor
+			@Builder
 			public static class Data1{
 				
 				@JsonProperty("name")

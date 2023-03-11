@@ -10,7 +10,6 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource({"linkedin.properties","core.properties","facebook.properties","twitter.properties"})
 public class SocialMediaPortal {
 	
-
 	public static void main(String[] args) {
 		SpringApplication.run(SocialMediaPortal.class, args);
 	}

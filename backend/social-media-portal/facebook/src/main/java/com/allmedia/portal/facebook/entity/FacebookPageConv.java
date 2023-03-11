@@ -3,6 +3,7 @@ package com.allmedia.portal.facebook.entity;
 import static javax.persistence.CascadeType.DETACH;
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REFRESH;
 
 import java.util.Objects;
 
@@ -16,28 +17,29 @@ import org.hibernate.annotations.NaturalId;
 
 import com.allmedia.portal.framework.entity.AbstractEntity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name="facebook_page_conversation")
+@Table(name="facebook_page_conv")
 @SuperBuilder
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class FacebookPageConv extends AbstractEntity{
 
 	@NaturalId
 	@Column(name="conv_id")
 	private String convId;
 	
-	@Column(name="from_user_id")
-	private String fromUserId;
-
-	@Column(name="to_user_id")
-	private String toUserId;
+	@Column(name="from_user_name")
+	private String fromUserName;
 	
-	@ManyToOne(cascade = {DETACH,MERGE,PERSIST,PERSIST})
+	@ManyToOne(cascade = {DETACH,MERGE,REFRESH,PERSIST})
 	@JoinColumn(name="facebook_age_id")
 	private FacebookPage facebookPage;
 	
@@ -54,7 +56,6 @@ public class FacebookPageConv extends AbstractEntity{
 	}
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
 		return Objects.hash(this.convId);
 	}
 }

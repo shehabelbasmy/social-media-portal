@@ -23,5 +23,5 @@ public class FacebookPageListener implements ApplicationListener<FacebookSuccess
 		var userPages = facebookAccesTokenPageClient.getPageToken(userId, token);
 		facebookPageService.savePages(userPages);
 	}
-
+	
 }

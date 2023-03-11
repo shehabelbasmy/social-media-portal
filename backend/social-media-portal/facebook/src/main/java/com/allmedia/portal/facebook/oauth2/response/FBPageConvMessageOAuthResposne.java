@@ -1,8 +1,7 @@
 package com.allmedia.portal.facebook.oauth2.response;
 
 import java.time.ZonedDateTime;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,30 +12,38 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FBPagePostsOAuthResponse {
+public class FBPageConvMessageOAuthResposne {
 
 	@JsonProperty("data")
-	private Set<Response> respose;
+	private List<Resposne> resposnes;
 	
-	@Data
-	@NoArgsConstructor
-	@AllArgsConstructor
 	@Builder
-	public static class Response{
-		@JsonProperty("id")
-		private String id;
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class Resposne{
+		
+		@JsonProperty("from")
+		private From from;
+
+		@Builder
+		@Data
+		@AllArgsConstructor
+		@NoArgsConstructor
+		public static class From{
+			private String name;
+		}
 		
 		@JsonProperty("message")
 		private String message;
-		
-		@JsonProperty("creation_time")
+
+		@JsonProperty("created_time")
 		private ZonedDateTime createdAt;
-		
-		@JsonProperty("reactions")
-		private Map<String, Object> addParamter; 
 	}
+	@JsonProperty("paging")
+	private FBPaginationOAuthRes page;
 }

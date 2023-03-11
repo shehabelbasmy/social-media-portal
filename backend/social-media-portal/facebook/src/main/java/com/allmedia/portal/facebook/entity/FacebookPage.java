@@ -47,8 +47,8 @@ public class FacebookPage extends AbstractEntity{
 	@JoinColumn(name = "facebook_user_id")
 	private FacebookUser facebookUser;
 	
-	@OneToMany(orphanRemoval = true,mappedBy = "facebookPage")
-	private Set<FacebookPageConv > conversations;
+	@OneToMany(orphanRemoval = true,mappedBy = "facebookPage",cascade = {DETACH,MERGE,PERSIST,REFRESH})
+	private Set<FacebookPageConv> conversations;
 	
 	@Override
 	public boolean equals(Object obj) {

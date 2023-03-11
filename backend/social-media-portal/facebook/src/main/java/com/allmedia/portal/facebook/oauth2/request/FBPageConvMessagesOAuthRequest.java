@@ -8,19 +8,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FBPageConvRequest {
+public class FBPageConvMessagesOAuthRequest {
 
-	private String accessToken;
-	
-	
-	public Map<String, String>getAsMap(){
+	private String token;
+	private String next;
+	public Map<String, String> getAsMap() {
 		Map<String, String> map =new HashMap<>();
-		map.put("access_token", accessToken);
-		map.put("fields", "id,participants,updated_time");
+		map.put("access_token", token);
+		map.put("limit", "25");
+		map.put("fields", "from,message,created_time");
+		if (next != null) {
+			map.put("after", next);
+		}
 		return map;
 	}
 }
