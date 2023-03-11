@@ -9,10 +9,12 @@
 	<name>core</name>
 	<description>Core For All Media</description>
 	<dependencies>
+	<!-- 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+	-->
 	</dependencies>
 </project>
