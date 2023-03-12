@@ -24,7 +24,7 @@ public class FBPagePostsOAuthRequest {
 	public Map<String, String> map() {
 		Map<String, String> map  = new HashMap<>();
 		map.put("access_token", token);
-		map.put("fields", "message,reactions.summary(total_count).limit(0)");
+		map.put("fields", "created_time,message,reactions.summary(total_count).limit(0)");
 		return map; 
 	}
 }

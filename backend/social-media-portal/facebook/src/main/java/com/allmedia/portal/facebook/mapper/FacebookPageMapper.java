@@ -37,7 +37,7 @@ public class FacebookPageMapper {
 		return allPosts.getRespose()
 			.stream().map(item->
 				FBPagePostsResponse.builder()
-				.createdAt(item.getCreatedAt())
+				.createdAt(item.getCreatedAt().toLocalDateTime())
 				.id(item.getId())
 				.message(item.getMessage())
 				.others(item.getAddParamter())

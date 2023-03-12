@@ -1,6 +1,6 @@
 package com.allmedia.portal.facebook.dto.response;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ public class FBPagePostsResponse {
 
 	private String id;
 	private String message;
-	private ZonedDateTime createdAt;
+	private LocalDateTime createdAt;
 	private Map<String , Object> others;
 	
 }

@@ -33,7 +33,7 @@ public class FBPagePostsOAuthResponse {
 		@JsonProperty("message")
 		private String message;
 		
-		@JsonProperty("creation_time")
+		@JsonProperty("created_time")
 		private ZonedDateTime createdAt;
 		
 		@JsonProperty("reactions")
