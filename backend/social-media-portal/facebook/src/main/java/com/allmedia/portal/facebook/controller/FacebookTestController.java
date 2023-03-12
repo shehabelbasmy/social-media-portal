@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping(BaseController.BASE_URI+"/facebook")
 @AllArgsConstructor
-public class FacebookController {
+public class FacebookTestController {
 
 	private final FacebookUserService facebookUserService;
 	@GetMapping("/user/token")

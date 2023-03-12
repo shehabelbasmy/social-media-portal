@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.allmedia.portal.framework.controller.BaseController;
 
 @RestController
-@RequestMapping(BaseController.BASE_URI+"facebbok/user")
+@RequestMapping(BaseController.BASE_URI+"/facebbok/user")
 public class FacebookUserController {
 
 	@GetMapping("/posts")
